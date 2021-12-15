@@ -1,0 +1,31 @@
+{
+  "name": "lupuscoding/webhook-sender",
+  "description": "Simple Sender for webhook requests.",
+  "version": "0.1.0",
+  "type": "library",
+  "keywords": ["webhook","microsoft"],
+  "homepage": "http://lupuscoding.de",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ralph Dittrich",
+      "email": "dittrich.ralph@lupuscoding.de",
+      "homepage": "http://github.com/lupuscoding/webhook-sender",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "ext-json": "*",
+    "ext-curl": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "LupusCoding\\Webhooks\\Sender\\": "src/",
+      "LupusCoding\\Webhooks\\SenderTests\\": "tests/"
+    }
+  }
+}
