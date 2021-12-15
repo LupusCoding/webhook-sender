@@ -1,7 +1,7 @@
 {
   "name": "lupuscoding/webhook-sender",
   "description": "Simple Sender for webhook requests.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "library",
   "keywords": ["webhook","microsoft"],
   "homepage": "http://lupuscoding.de",
