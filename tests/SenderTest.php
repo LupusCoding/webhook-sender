@@ -14,28 +14,49 @@ use PHPUnit\Framework\TestCase;
  */
 class SenderTest extends TestCase
 {
-    /** @covers \LupusCoding\Webhooks\Sender\Sender */
-    public function testSendWebhook(): void
+    const WEBHOOK_URL = 'https://httpbin.org/post';
+
+    /**
+     * @covers \LupusCoding\Webhooks\Sender\Sender
+     * @dataProvider mockProvider
+     */
+    public function testSendWebhook($mock): void
     {
-        $webhookUrl = 'https://httpbin.org/post';
-        $mock = new JsonSerializeMock([
-            'name' => 'LupusCoding::testSendWebhook',
-            'fields' => [
-                'some', 'example', 'stuff',
-            ],
-            'values' => [
-                'some' => 'foo',
-                'example' => 'bar',
-                'stuff' => 'baz',
-            ],
-        ]);
+        $mock['name'] = 'LupusCoding::testSendWebhook';
+        $sender = new Sender(self::WEBHOOK_URL);
+        $sender->send(new JsonSerializeMock($mock));
 
-        $sender = new Sender($webhookUrl, false);
-        $sender->send($mock);
-
-        $this->assertIsString(($response = $sender->getLastResponse()));
-        $responseBody = json_decode($response, true);
+        $this->assertFalse($sender->hasError());
+        $responseBody = json_decode($sender->getLastResponse(), true);
         $this->assertEquals('httpbin.org', $responseBody['headers']['Host']);
         $this->assertEquals('LupusCoding::testSendWebhook', $responseBody['json']['name']);
+    }
+
+    public function mockProvider(): array
+    {
+        return [
+            [[
+                'name' => 'LupusCoding::sampleMethod',
+                'fields' => [ 'some', 'example', 'stuff', ],
+                'values' => [
+                    'some' => 'foo',
+                    'example' => 'bar',
+                    'stuff' => 'baz',
+                ],
+            ]],
+        ];
+    }
+
+    /**
+     * @covers \LupusCoding\Webhooks\Sender\Sender
+     * @dataProvider mockProvider
+     */
+    public function testFailedSend($mock): void
+    {
+        $mock['name'] = 'LupusCoding::testSendWebhook';
+        $sender = new Sender('http://no.endpoi.nt/should/fail', false);
+        $sender->send(new JsonSerializeMock($mock));
+
+        $this->assertTrue($sender->hasError());
     }
 }
